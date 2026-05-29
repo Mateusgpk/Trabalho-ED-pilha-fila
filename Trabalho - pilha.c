@@ -9,9 +9,8 @@ typedef struct ele{
     struct ele *prox;
 }No;
 
-typedef struct No* pilha;
+typedef No* pilha;
 
-pilha *pi;
 pilha * Criar_pilha(){
     pilha *p = (pilha*)malloc(sizeof(pilha));
     if (p != NULL){
@@ -19,6 +18,9 @@ pilha * Criar_pilha(){
     }
     return p;
 }
+
+
+pilha *pi=NULL;
 
 int push(pilha *p,int x){
     if(p==NULL ) return 0;
@@ -31,7 +33,7 @@ int push(pilha *p,int x){
 }
 
 int pop(pilha *p){
-    if (p==NULL && *p==NULL) return 0;
+    if (p==NULL || *p==NULL) return 0;
     No *no = *p;
     *p = no->prox;
     free(no);
@@ -114,7 +116,7 @@ void definirCaminho(int posR){
     posx=posR/100;
     posy=posR%100;
 
-    if(saida)
+    
 
     if (campo[posx][posy+1] == 0 || campo[posx][posy+1] == 3)
     {
@@ -122,7 +124,8 @@ void definirCaminho(int posR){
         posy++;
         posR=(posx*100)+posy;
         definirCaminho(posR);
-}
+    
+    } else if (campo[posx+1][posy] == 0 || campo [posx])
 }
 
 
