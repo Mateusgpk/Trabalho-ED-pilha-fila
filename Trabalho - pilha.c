@@ -19,8 +19,9 @@ pilha * Criar_pilha(){
     return p;
 }
 
+int rato, saida;
+pilha *pi;
 
-pilha *pi=NULL;
 
 int push(pilha *p,int x){
     if(p==NULL ) return 0;
@@ -39,13 +40,28 @@ int pop(pilha *p){
     free(no);
     return 1;   
 }
+int top(pilha *p){
+    if (p==NULL || *p==NULL) return -20;
+    return (*p)->dado;
+}
+
+int mostrar(pilha *p){
+    if (p==NULL || *p==NULL) return 0;
+    No* no = *p;
+    while (no!=NULL)
+    {
+        printf("%d ",no->dado);
+        no=no->prox;
+    }
+    
+}
 
 
 
 int campo [30][30];
 int posi[2]={0,29};
 
-int gerar_campo(){
+void gerar_campo(){
     for (int i = 0; i < 30; i++)
     {
         for (int j = 0; j < 30; j++)
@@ -73,7 +89,7 @@ int gerar_campo(){
          saidai = posi[rand() % 2];
     }
      
-    for (int i=0; i<50; i++)
+    for (int i=0; i<100; i++)
     {
    
         int num1 = rand() % (28) + 1;
@@ -89,6 +105,9 @@ int gerar_campo(){
     
     
     campo[saidai][saidaj] = 2;
+    saida=(saidai*100)+saidaj;
+    rato= posR;
+    
     for (int i = 0; i < 30; i++)
     {
         for (int j = 0; j < 30; j++)
@@ -108,32 +127,127 @@ int gerar_campo(){
         }
     printf("\n");
     }
-    return posR;
+    
+    
 }
 
-void definirCaminho(int posR){
+void desenharcampo(){
+    for (int i = 0; i < 30; i++)
+    {
+        for (int j = 0; j < 30; j++)
+        {
+            
+
+            if(campo[i][j] == 1){
+                printf("#");
+            }else if(campo[i][j] == 2){
+                printf("S");
+            }else if(campo[i][j] == 3){
+                printf("X");
+            }else if(campo[i][j] == 4){
+                printf("%c",177);
+            }
+            else if(campo[i][j] == 5){
+                printf(".");
+            }
+            else{
+                printf(" ");
+            }
+        
+        }
+    printf("\n");
+    }
+}
+
+void definirCaminho(int posR, int posS){
     int posx,posy;
     posx=posR/100;
     posy=posR%100;
 
     
+if (posR!=posS)
+{
 
-    if (campo[posx][posy+1] == 0 || campo[posx][posy+1] == 3)
+
+    if (campo[posx][posy+1] == 0 || campo[posx][posy+1] == 3 || campo[posx][posy+1] == 2)
     {
+
+        
         push(pi,posR);
+        campo[posx][posy]=5;
+        campo[posx][posy+1]=3; 
         posy++;
         posR=(posx*100)+posy;
-        definirCaminho(posR);
+        printf("%d ",posR);
+        system("cls");
+        desenharcampo();
+        definirCaminho(posR,posS);
     
-    } else if (campo[posx+1][posy] == 0 || campo [posx])
-}
+    } else if (campo[posx+1][posy] == 0 || campo [posx+1][posy]==3 || campo [posx+1][posy]==2){
+        push(pi,posR);
+        campo[posx][posy]=5; 
+        campo[posx+1][posy]=3; 
+        posx++;
+        posR=(posx*100)+posy;
+        printf("aaaa %d ",posR);
+        system("cls");
+        desenharcampo();
+        definirCaminho(posR,posS);
+    } else if (campo[posx-1][posy]==0 || campo[posx-1][posy]==3 || campo[posx-1][posy]==2){
+        push(pi,posR);
+        campo[posx][posy]=5;
+        desenharcampo();
+        printf("%d ",posx);
+        printf("%d ", top(pi));
+        printf("aaaa %d ",posR);
+        campo[posx-1][posy]=3; 
+         
+        posx--;
+        posR=(posx*100)+posy;
+        system("cls");
+        desenharcampo();
+        printf("%d ",posR);
+        definirCaminho(posR,posS);
+    }   else if (campo[posx][posy-1]==0 || campo[posx][posy-1]==3 || campo[posx][posy-1]==2){
+        push(pi,posR);
+        campo[posx][posy]=5;
+        campo[posx][posy-1]=3;  
+        posy--;
+        posR=(posx*100)+posy;
+        system("cls");
+        desenharcampo();
+        printf("%d ",posR);
+        definirCaminho(posR,posS);
+    }
+    else{
+        pop(pi);
+        desenharcampo();
+        posR=top(pi);
+        //volta muito; perde o caminho; verificar se tem caminho já visitado
+        campo[posx][posy]=4;
+        posx=posR/100;
+        posy=posR%100;
+        campo[posx][posy]=3;
+        system("cls");
+        
 
+        definirCaminho(posR,posS);
+        
+    }
+}
+}
 
 int main(int argc, char const *argv[])
 {
-    int rato=gerar_campo();
+    gerar_campo();
+    pi= Criar_pilha();
     pilha *Pilha = Criar_pilha();
-
+    printf("%d %d",rato, saida);
+    definirCaminho(rato,saida);
+    system("cls");
+    desenharcampo();
+    printf("caminho encontrado");
+    mostrar(pi);
     return 0;
 
 }
